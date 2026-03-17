@@ -95,7 +95,7 @@ trading-dashboard/
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/trading-dashboard.git
+git clone https://github.com/abhishek-singh-codes/trading-dashboard.git
 cd trading-dashboard
 
 # 2. Generate go.sum (one time only — needs Go installed)
@@ -109,7 +109,7 @@ docker-compose up --build
 |-------------|------------------------|
 | 🌐 Frontend  | http://localhost:3000  |
 | ⚙️ Backend   | http://localhost:8080  |
-| 🗄️ Database  | localhost:5432         |
+| 🗄️ Database  | localhost:5433         |
 
 ```bash
 # Stop everything
@@ -129,7 +129,7 @@ docker run --name trading_db \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=password \
   -e POSTGRES_DB=trading_db \
-  -p 5432:5432 \
+  -p 5433:5432 \
   -d postgres:16
 ```
 
