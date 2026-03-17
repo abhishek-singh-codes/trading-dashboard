@@ -4,10 +4,10 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --include=dev
 
 COPY . .
-RUN npm run build
+RUN npm run build 
 
 # ── Runtime stage ─────────────────────────────────────────────────────────────
 FROM nginx:alpine
