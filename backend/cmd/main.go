@@ -13,9 +13,12 @@ import (
 )
 
 func main() {
+	// load .env variables, since we are using getEnv with defaults
 	cfg := config.Load()
 
+	// connect to database and run migrations
 	database := db.Connect(cfg)
+	// ensure database connection is closed when main exits
 	defer database.Close()
 	db.Migrate(database)
 

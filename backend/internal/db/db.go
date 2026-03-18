@@ -6,8 +6,9 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/lib/pq"
 	"trading-dashboard/internal/config"
+
+	_ "github.com/lib/pq"
 )
 
 func Connect(cfg *config.Config) *sql.DB {
@@ -31,11 +32,11 @@ func Connect(cfg *config.Config) *sql.DB {
 			time.Sleep(2 * time.Second)
 			continue
 		}
-		log.Println("✅ Database connected successfully")
+		log.Println("Database connected successfully")
 		return database
 	}
 
-	log.Fatalf("❌ Could not connect to database: %v", err)
+	log.Fatalf("Could not connect to database: %v", err)
 	return nil
 }
 
@@ -73,8 +74,8 @@ func Migrate(database *sql.DB) {
 
 	for _, stmt := range statements {
 		if _, err := database.Exec(stmt); err != nil {
-			log.Fatalf("❌ Migration failed: %v", err)
+			log.Fatalf("Migration failed: %v", err)
 		}
 	}
-	log.Println("✅ Database migrations applied")
+	log.Println("Database migrations applied")
 }
