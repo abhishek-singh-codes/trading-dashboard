@@ -15,6 +15,7 @@ func NewRepository(db *sql.DB) *Repository {
 	return &Repository{db: db}
 }
 
+// history ko upsert karna hai, kyunki agar same date ke liye data aa raha hai toh update karna hai, nahi toh insert karna hai. Isse hum ensure karte hain ki humare paas hamesha latest data ho aur duplicate entries na ho.
 func (r *Repository) UpsertPriceHistory(symbol string, date time.Time, open, high, low, close float64, volume int64) error {
 	_, err := r.db.Exec(`
 		INSERT INTO price_history (symbol, trade_date, open_price, high_price, low_price, close_price, volume, fetched_at)
@@ -54,6 +55,7 @@ func (r *Repository) GetHistory(symbol string, days int) ([]models.PriceHistory,
 	return history, rows.Err()
 }
 
+// update the symbol metadata (company name, exchange, currency) - this is called when we fetch new data from Yahoo
 func (r *Repository) UpsertSymbolMetadata(meta models.SymbolMetadata) error {
 	_, err := r.db.Exec(`
 		INSERT INTO symbol_metadata (symbol, company_name, currency, exchange, last_fetched)
@@ -67,6 +69,7 @@ func (r *Repository) UpsertSymbolMetadata(meta models.SymbolMetadata) error {
 	return err
 }
 
+// get the symbol metadata - this is used to display company name, exchange, etc. in the UI
 func (r *Repository) GetSymbolMetadata(symbol string) (*models.SymbolMetadata, error) {
 	var meta models.SymbolMetadata
 	err := r.db.QueryRow(`
@@ -82,6 +85,7 @@ func (r *Repository) GetSymbolMetadata(symbol string) (*models.SymbolMetadata, e
 	return &meta, nil
 }
 
+// check if we have recent data for this symbol - if not, we should fetch from Yahoo
 func (r *Repository) IsDataStale(symbol string) bool {
 	var lastFetched time.Time
 	err := r.db.QueryRow(

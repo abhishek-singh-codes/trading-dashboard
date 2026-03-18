@@ -84,18 +84,23 @@ func (s *Service) FetchAndStoreHistory(symbol, period string) (*models.HistoryRe
 		days = 7 // 7 days fetch karo taaki weekend/holiday miss na ho
 		yahooRange = "5d"
 	}
+	// checking is there any data in history table for this symbol and if it's recent (fetched within last 12 hours) - if not, then we should fetch from Yahoo Finance
 
+	// till here fetch and save
 	if s.repo.IsDataStale(symbol) {
-		log.Printf("📡 Fetching %s from Yahoo Finance...", symbol)
+		log.Printf("Fetching %s from Yahoo Finance...", symbol)
 		chart, err := s.fetchYahooChart(symbol, yahooRange)
 		if err != nil {
-			log.Printf("⚠️  Yahoo fetch failed: %v", err)
+			log.Printf("Yahoo fetch failed: %v", err)
 		} else {
+			// store it so that next time it's fast and we have historical data
 			if err := s.storeChartData(symbol, chart); err != nil {
-				log.Printf("⚠️  Store failed: %v", err)
+				log.Printf("Store failed: %v", err)
 			}
 		}
 	}
+
+	// now get the data from db
 
 	history, err := s.repo.GetHistory(symbol, days)
 	if err != nil {
