@@ -31,6 +31,7 @@ func (s *Service) Search(query string) ([]models.SearchResult, error) {
 		url.QueryEscape(query),
 	)
 
+	// my backend is calling external API, toh user-agent set karna zaruri hai taaki Yahoo Finance request ko block na kare. Isse hum apne app ko identify kar sakte hain.
 	req, _ := http.NewRequest(http.MethodGet, endpoint, nil)
 	req.Header.Set("User-Agent", "Mozilla/5.0 (compatible; TradingDashboard/1.0)")
 
@@ -42,6 +43,15 @@ func (s *Service) Search(query string) ([]models.SearchResult, error) {
 
 	body, _ := io.ReadAll(resp.Body)
 
+	// yahoo finance response
+	/*
+				{
+		            "symbol": "AAPL",
+		            "name": "Apple Inc.",
+		            "exchange": "NMS",
+		            "quote_type": "EQUITY"
+		        }
+	*/
 	var yfResp models.YFSearchResponse
 	if err := json.Unmarshal(body, &yfResp); err != nil {
 		return nil, fmt.Errorf("parse search: %w", err)

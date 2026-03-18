@@ -4,11 +4,13 @@ import (
 	"net/http"
 	"strings"
 
+	"trading-dashboard/internal/config"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"trading-dashboard/internal/config"
 )
 
+// check header for Bearer token, validate it and set user info in context
 func JWTMiddleware(cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")

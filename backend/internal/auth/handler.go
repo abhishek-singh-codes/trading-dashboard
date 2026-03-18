@@ -23,6 +23,7 @@ func NewHandler(db *sql.DB, cfg *config.Config) *Handler {
 }
 
 func (h *Handler) Register(c *gin.Context) {
+	// email, password, name
 	var req models.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -41,7 +42,7 @@ func (h *Handler) Register(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
 		return
 	}
-
+	// inserting user to the table
 	var user models.User
 	err = h.db.QueryRow(
 		`INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3)
@@ -61,12 +62,13 @@ func (h *Handler) Register(c *gin.Context) {
 }
 
 func (h *Handler) Login(c *gin.Context) {
+	// email, password
 	var req models.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	// fetching details of the user with the email provided in the request
 	var user models.User
 	err := h.db.QueryRow(
 		`SELECT id, email, password_hash, name FROM users WHERE email=$1`, req.Email,
