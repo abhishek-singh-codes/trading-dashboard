@@ -158,11 +158,151 @@ func (s *Service) GetQuote(symbol string) (*models.QuoteResponse, error) {
 	}, nil
 }
 
+/* API Response for 5 day
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "USD",
+          "symbol": "RS",
+          "exchangeName": "NYQ",
+          "fullExchangeName": "NYSE",
+          "instrumentType": "EQUITY",
+          "firstTradeDate": 779722200,
+          "regularMarketTime": 1773777602,
+          "hasPrePostMarketData": true,
+          "gmtoffset": -14400,
+          "timezone": "EDT",
+          "exchangeTimezoneName": "America/New_York",
+          "regularMarketPrice": 299.04,
+          "fiftyTwoWeekHigh": 365.59,
+          "fiftyTwoWeekLow": 250.07,
+          "regularMarketDayHigh": 301.77,
+          "regularMarketDayLow": 297.94,
+          "regularMarketVolume": 221426,
+          "longName": "Reliance, Inc.",
+          "shortName": "Reliance, Inc.",
+          "chartPreviousClose": 300.31,
+          "priceHint": 2,
+          "currentTradingPeriod": {
+            "pre": {
+              "timezone": "EDT",
+              "end": 1773840600,
+              "start": 1773820800,
+              "gmtoffset": -14400
+            },
+            "regular": {
+              "timezone": "EDT",
+              "end": 1773864000,
+              "start": 1773840600,
+              "gmtoffset": -14400
+            },
+            "post": {
+              "timezone": "EDT",
+              "end": 1773878400,
+              "start": 1773864000,
+              "gmtoffset": -14400
+            }
+          },
+          "dataGranularity": "1d",
+          "range": "5d",
+          "validRanges": [
+            "1d",
+            "5d",
+            "1mo",
+            "3mo",
+            "6mo",
+            "1y",
+            "2y",
+            "5y",
+            "10y",
+            "ytd",
+            "max"
+          ]
+        },
+        "timestamp": [
+          1773235800,
+          1773322200,
+          1773408600,
+          1773667800,
+          1773754200,
+          1773777602
+        ],
+        "indicators": {
+          "quote": [
+            {
+              "low": [
+                297.95001220703125,
+                298.7699890136719,
+                294.70001220703125,
+                296.6000061035156,
+                297.6700134277344,
+                297.94000244140625
+              ],
+              "close": [
+                308.0899963378906,
+                299.2799987792969,
+                297.44000244140625,
+                297.79998779296875,
+                299.0400085449219,
+                299.0400085449219
+              ],
+              "open": [
+                299.6199951171875,
+                306.19000244140625,
+                300.32000732421875,
+                296.6000061035156,
+                299.7300109863281,
+                299.7300109863281
+              ],
+              "high": [
+                308.489990234375,
+                307,
+                300.32000732421875,
+                303.239990234375,
+                302.5400085449219,
+                301.7699890136719
+              ],
+              "volume": [
+                477600,
+                384800,
+                391100,
+                368400,
+                281200,
+                221426
+              ]
+            }
+          ],
+          "adjclose": [
+            {
+              "adjclose": [
+                308.0899963378906,
+                299.2799987792969,
+                297.44000244140625,
+                297.79998779296875,
+                299.0400085449219,
+                299.0400085449219
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}
+*/
+
 func (s *Service) fetchYahooChart(symbol, yahooRange string) (*models.YFChartResponse, error) {
+
+	// symbol: RS (Reliance etc), range: 1d, 30d
 	endpoint := fmt.Sprintf(
 		"https://query1.finance.yahoo.com/v8/finance/chart/%s?interval=1d&range=%s",
 		url.PathEscape(symbol), yahooRange,
 	)
+
+	// external api call to yahoo finance
 	req, _ := http.NewRequest(http.MethodGet, endpoint, nil)
 	req.Header.Set("User-Agent", "Mozilla/5.0 (compatible; TradingDashboard/1.0)")
 
